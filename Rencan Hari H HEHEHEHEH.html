@@ -1,0 +1,417 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard Rencana Nikah & Masa Depan</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        sage: {
+                            50: '#F4F7F5',
+                            100: '#E3EBE7',
+                            200: '#C2D6CB',
+                            300: '#A1C2AF',
+                            400: '#80AD94',
+                            500: '#5F9978',
+                            600: '#4C7A60',
+                            700: '#395C48',
+                            800: '#263D30',
+                            900: '#131F18',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap');
+        body {
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            background-color: #F4F7F5;
+        }
+        .task-checked {
+            text-decoration: line-through;
+            color: #9CA3AF;
+        }
+        .custom-scrollbar::-webkit-scrollbar {
+            width: 6px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-track {
+            background: #f1f1f1; 
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb {
+            background: #C2D6CB; 
+            border-radius: 8px;
+        }
+        .custom-scrollbar::-webkit-scrollbar-thumb:hover {
+            background: #A1C2AF; 
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased p-4 md:p-8 min-h-screen flex flex-col">
+
+    <header class="max-w-6xl mx-auto w-full mb-8">
+        <div class="bg-sage-700 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+            <div class="absolute top-0 right-0 opacity-10 transform translate-x-1/4 -translate-y-1/4">
+                <i class="fas fa-rings text-9xl"></i>
+            </div>
+            <div class="relative z-10">
+                <p class="text-sage-200 font-semibold tracking-wider text-sm mb-2 uppercase">Menuju Hari Bahagia</p>
+                <h1 class="text-3xl md:text-4xl font-bold mb-4">Dashboard Rencana Pernikahan & Masa Depan</h1>
+                <div class="flex flex-wrap gap-4 text-sm font-medium">
+                    <div class="flex items-center bg-sage-800/50 rounded-full px-4 py-2">
+                        <i class="far fa-calendar-alt mr-2"></i>
+                        <input type="date" id="wedding-date" class="bg-transparent text-white border-none outline-none cursor-pointer focus:ring-0 [&::-webkit-calendar-picker-indicator]:invert" onchange="updateDate(this.value)">
+                    </div>
+                    <div class="flex items-center bg-sage-800/50 rounded-full px-4 py-2">
+                        <i class="fas fa-heart mr-2 text-red-400"></i>
+                        Akad KUA & Syukuran Inti
+                    </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto w-full grid grid-cols-1 lg:grid-cols-3 gap-8 flex-grow">
+        
+        <div class="lg:col-span-2 space-y-8">
+            
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-sage-100 flex flex-col justify-center items-center text-center">
+                    <div class="w-12 h-12 bg-sage-100 text-sage-600 rounded-full flex items-center justify-center mb-3 text-xl">
+                        <i class="fas fa-bullseye"></i>
+                    </div>
+                    <p class="text-gray-500 text-sm font-medium">Target Anggaran</p>
+                    <div class="flex items-center justify-center mt-1">
+                        <span class="text-gray-400 mr-1 text-lg font-bold">Rp</span>
+                        <input type="number" id="input-target-anggaran" 
+                            class="text-2xl font-bold text-gray-800 bg-transparent border-b border-dashed border-gray-300 focus:border-sage-500 focus:ring-0 outline-none w-36 text-center"
+                            oninput="updateTargetAnggaran(this.value)" placeholder="30000000">
+                    </div>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-sage-100 flex flex-col justify-center items-center text-center">
+                    <div class="w-12 h-12 bg-orange-100 text-orange-500 rounded-full flex items-center justify-center mb-3 text-xl">
+                        <i class="fas fa-receipt"></i>
+                    </div>
+                    <p class="text-gray-500 text-sm font-medium">Total Terpakai</p>
+                    <p class="text-2xl font-bold text-gray-800" id="total-terpakai">Rp 0</p>
+                </div>
+                <div class="bg-white rounded-xl p-6 shadow-sm border border-sage-100 flex flex-col justify-center items-center text-center">
+                    <div class="w-12 h-12 bg-green-100 text-green-600 rounded-full flex items-center justify-center mb-3 text-xl">
+                        <i class="fas fa-wallet"></i>
+                    </div>
+                    <p class="text-gray-500 text-sm font-medium">Sisa Anggaran</p>
+                    <p class="text-2xl font-bold text-green-600" id="sisa-anggaran">Rp 30.000.000</p>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-sage-100 overflow-hidden">
+                <div class="p-6 border-b border-sage-100 flex justify-between items-center bg-sage-50/50">
+                    <h2 class="text-xl font-bold text-gray-800"><i class="fas fa-file-invoice-dollar text-sage-500 mr-2"></i> Rincian Anggaran</h2>
+                </div>
+                <div class="overflow-x-auto custom-scrollbar">
+                    <table class="w-full text-left border-collapse">
+                        <thead>
+                            <tr class="bg-sage-50 text-sage-700 text-sm">
+                                <th class="p-4 font-semibold">Kategori & Item</th>
+                                <th class="p-4 font-semibold text-right">Estimasi Biaya</th>
+                                <th class="p-4 font-semibold text-right">Biaya Aktual</th>
+                                <th class="p-4 font-semibold">Keterangan</th>
+                            </tr>
+                        </thead>
+                        <tbody class="text-sm divide-y divide-gray-100" id="budget-list">
+                            </tbody>
+                    </table>
+                </div>
+            </div>
+
+            <div class="bg-white rounded-2xl shadow-sm border border-sage-100 overflow-hidden">
+                <div class="p-6 border-b border-sage-100 bg-sage-50/50">
+                    <h2 class="text-xl font-bold text-gray-800"><i class="fas fa-tasks text-sage-500 mr-2"></i> Timeline Persiapan</h2>
+                    <p class="text-sm text-gray-500 mt-1">Centang tugas yang sudah diselesaikan berdua.</p>
+                </div>
+                <div class="p-6">
+                    <div class="space-y-3" id="task-list">
+                        </div>
+                </div>
+            </div>
+
+        </div>
+
+        <div class="space-y-8">
+            
+            <div class="bg-white rounded-2xl shadow-sm border border-sage-100 overflow-hidden">
+                <div class="p-6 border-b border-sage-100 bg-sage-50/50">
+                    <h2 class="text-xl font-bold text-gray-800"><i class="fas fa-seedling text-sage-500 mr-2"></i> Tabungan Masa Depan</h2>
+                    <p class="text-sm text-gray-500 mt-1">Fokus kita setelah pernikahan selesai.</p>
+                </div>
+                <div class="p-6 space-y-6" id="goals-list">
+                    </div>
+            </div>
+
+            <div class="bg-sage-600 rounded-2xl shadow-sm text-white p-6 relative overflow-hidden">
+                <i class="fas fa-quote-left absolute top-4 left-4 text-sage-500/30 text-4xl"></i>
+                <div class="relative z-10 text-center pt-4">
+                    <p class="font-medium italic text-lg leading-relaxed mb-4">"Menikah itu tentang hidup bersama setelah pestanya usai. Kesederhanaan hari ini adalah pondasi untuk kemapanan masa depan kita."</p>
+                    <div class="w-12 h-1 bg-sage-400 mx-auto rounded"></div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="max-w-6xl mx-auto w-full mt-8 text-center text-sm text-gray-400 pb-4">
+        Dibuat khusus untuk persiapan pernikahan Anda berdua. Semangat!
+    </footer>
+
+    <script>
+        // Default Data
+        const defaultBudgets = [
+            { id: 1, category: "Administrasi KUA", item: "Biaya KUA & Berkas", est: 600000, actual: 0, note: "Gratis di kantor saat hari kerja" },
+            { id: 2, category: "Mahar & Cincin", item: "Mahar Kesepakatan", est: 5000000, actual: 0, note: "Logam mulia / Uang tunai" },
+            { id: 3, category: "Mahar & Cincin", item: "Cincin Kawin Berdua", est: 4000000, actual: 0, note: "Sesuai selera berdua" },
+            { id: 4, category: "Pakaian & MUA", item: "Sewa Busana & Makeup", est: 3000000, actual: 0, note: "Mempelai & Orang tua" },
+            { id: 5, category: "Dokumentasi", item: "Jasa Foto & Video", est: 2000000, actual: 0, note: "Sesi KUA & Syukuran" },
+            { id: 6, category: "Syukuran", item: "Makan Bersama (Keluarga Inti)", est: 10000000, actual: 0, note: "Mertua & Keluarga Ibu" },
+            { id: 7, category: "Dana Darurat", item: "Cadangan Tak Terduga", est: 5400000, actual: 0, note: "Dialihkan ke rumah jika sisa" }
+        ];
+
+        const defaultTasks = [
+            { id: 1, title: "Urus Surat Pengantar RT/RW", deadline: "Agustus 2026", done: false },
+            { id: 2, title: "Daftar KUA & Booking Tanggal 12-12", deadline: "Agustus 2026", done: false },
+            { id: 3, title: "Beli Cincin Kawin & Siapkan Mahar", deadline: "September 2026", done: false },
+            { id: 4, title: "Booking Tempat Makan/Resto", deadline: "September 2026", done: false },
+            { id: 5, title: "Booking MUA & Fotografer", deadline: "Oktober 2026", done: false },
+            { id: 6, title: "Fitting Baju Akad", deadline: "November 2026", done: false },
+            { id: 7, title: "Hari H Akad & Syukuran", deadline: "12 Des 2026", done: false }
+        ];
+
+        const defaultGoals = [
+            { id: 1, title: "DP Rumah", target: 150000000, current: 0, icon: "fa-home", c: {text: "text-blue-500", bg: "bg-blue-50", bar: "bg-blue-400", ring: "focus:ring-blue-400", border: "focus:border-blue-400"} },
+            { id: 2, title: "Persiapan Umroh", target: 80000000, current: 0, icon: "fa-kaaba", c: {text: "text-amber-500", bg: "bg-amber-50", bar: "bg-amber-400", ring: "focus:ring-amber-400", border: "focus:border-amber-400"} },
+            { id: 3, title: "Honeymoon", target: 25000000, current: 0, icon: "fa-plane-departure", c: {text: "text-purple-500", bg: "bg-purple-50", bar: "bg-purple-400", ring: "focus:ring-purple-400", border: "focus:border-purple-400"} }
+        ];
+
+        // Load data from LocalStorage or use defaults
+        let budgets = JSON.parse(localStorage.getItem('nikah_budgets')) || defaultBudgets;
+        let tasks = JSON.parse(localStorage.getItem('nikah_tasks')) || defaultTasks;
+        let goals = JSON.parse(localStorage.getItem('nikah_goals')) || defaultGoals;
+        let weddingDate = localStorage.getItem('nikah_date') || '2026-12-12';
+        
+        // Target anggaran dinamis yang dimuat dari localStorage
+        let targetAnggaran = Number(localStorage.getItem('nikah_target_anggaran')) || 30000000;
+
+        // Validasi struktur data lama di localStorage agar tidak memicu error objek warna `g.c`
+        if (goals.length > 0 && (!goals[0].c || !goals[0].target)) {
+            goals = defaultGoals;
+            localStorage.setItem('nikah_goals', JSON.stringify(defaultGoals));
+        }
+
+        // Save data back to LocalStorage
+        const saveData = () => {
+            localStorage.setItem('nikah_budgets', JSON.stringify(budgets));
+            localStorage.setItem('nikah_tasks', JSON.stringify(tasks));
+            localStorage.setItem('nikah_goals', JSON.stringify(goals));
+            localStorage.setItem('nikah_date', weddingDate);
+            localStorage.setItem('nikah_target_anggaran', targetAnggaran);
+        };
+
+        const formatRp = (num) => {
+            return new Intl.NumberFormat("id-ID", { style: "currency", currency: "IDR", maximumFractionDigits: 0 }).format(num);
+        };
+
+        const renderDashboard = () => {
+            // 1. Render Budgets
+            const budgetList = document.getElementById("budget-list");
+            budgetList.innerHTML = "";
+            let totalTerpakai = 0;
+
+            budgets.forEach((b) => {
+                totalTerpakai += Number(b.actual);
+                budgetList.innerHTML += `
+                    <tr class="hover:bg-gray-50 transition-colors group">
+                        <td class="p-4">
+                            <p class="font-semibold text-gray-800">${b.item}</p>
+                            <p class="text-xs text-gray-500">${b.category}</p>
+                        </td>
+                        <td class="p-4 text-right font-medium text-gray-500">${formatRp(b.est)}</td>
+                        <td class="p-4 text-right">
+                            <div class="flex items-center justify-end">
+                                <span class="text-gray-400 mr-2 text-sm">Rp</span>
+                                <input type="number" 
+                                    class="w-28 p-1.5 border border-gray-300 rounded-md text-right text-gray-800 focus:ring-2 focus:ring-sage-500 focus:border-sage-500 outline-none transition-all shadow-inner bg-white" 
+                                    value="${b.actual || ''}" 
+                                    oninput="updateBudget(${b.id}, this.value)"
+                                    placeholder="0">
+                            </div>
+                        </td>
+                        <td class="p-4 text-gray-500 text-sm hidden md:table-cell">${b.note}</td>
+                    </tr>
+                `;
+            });
+
+            // Update Header Summary menggunakan targetAnggaran dinamis
+            document.getElementById("total-terpakai").innerText = formatRp(totalTerpakai);
+            const sisa = targetAnggaran - totalTerpakai;
+            const sisaEl = document.getElementById("sisa-anggaran");
+            sisaEl.innerText = formatRp(sisa);
+            sisaEl.className = `text-2xl font-bold ${sisa < 0 ? 'text-red-500' : 'text-green-600'}`;
+
+            // 2. Render Tasks
+            const taskList = document.getElementById("task-list");
+            taskList.innerHTML = "";
+            tasks.forEach((t) => {
+                taskList.innerHTML += `
+                    <label class="flex items-center p-4 bg-white rounded-xl border border-gray-200 cursor-pointer hover:border-sage-300 hover:shadow-md transition-all duration-200 group">
+                        <div class="relative flex items-center justify-center">
+                            <input type="checkbox" class="peer h-6 w-6 cursor-pointer appearance-none rounded-md border border-gray-300 checked:border-sage-500 checked:bg-sage-500 transition-all" ${t.done ? 'checked' : ''} onclick="toggleTask(${t.id})">
+                            <span class="absolute text-white opacity-0 peer-checked:opacity-100 pointer-events-none">
+                                <i class="fas fa-check text-sm"></i>
+                            </span>
+                        </div>
+                        <div class="ml-4 flex-grow">
+                            <span class="block font-medium text-gray-800 ${t.done ? 'task-checked' : ''} transition-all">${t.title}</span>
+                        </div>
+                        <span class="ml-auto text-xs font-medium px-3 py-1 bg-gray-100 text-gray-600 rounded-full group-hover:bg-sage-50 group-hover:text-sage-700 transition-colors">${t.deadline}</span>
+                    </label>
+                `;
+            });
+
+            // 3. Render Goals
+            const goalsList = document.getElementById("goals-list");
+            goalsList.innerHTML = "";
+            goals.forEach((g) => {
+                const targetNum = Number(g.target) || 1; // prevent divide by zero
+                const percent = Math.min(Math.round((g.current / targetNum) * 100), 100);
+                goalsList.innerHTML += `
+                    <div class="p-4 border border-gray-100 rounded-xl bg-white shadow-sm hover:shadow-md transition-all">
+                        <div class="flex justify-between items-start mb-3">
+                            <div>
+                                <h3 class="font-bold text-gray-800 flex items-center">
+                                    <i class="fas ${g.icon} ${g.c.text} mr-2 w-5 text-center"></i> ${g.title}
+                                </h3>
+                                <div class="flex items-center mt-1">
+                                    <span class="text-xs text-gray-500 mr-1">Target: Rp</span>
+                                    <input type="number" 
+                                        class="text-xs font-semibold text-gray-600 bg-gray-50 border border-gray-200 rounded px-1 py-0.5 outline-none w-28 focus:border-gray-400 transition-colors" 
+                                        value="${g.target || ''}" 
+                                        oninput="updateGoalTarget(${g.id}, this.value)"
+                                        placeholder="0">
+                                </div>
+                            </div>
+                            <span id="goal-pct-${g.id}" class="text-sm font-bold ${g.c.text} ${g.c.bg} px-2 py-1 rounded-md">${percent}%</span>
+                        </div>
+                        <div class="w-full bg-gray-100 rounded-full h-2.5 mb-3">
+                            <div id="goal-bar-${g.id}" class="${g.c.bar} h-2.5 rounded-full transition-all duration-500" style="width: ${percent}%"></div>
+                        </div>
+                        <div class="flex items-center justify-between mt-2 pt-2 border-t border-gray-50">
+                            <span class="text-sm font-medium text-gray-600">Sudah Terkumpul:</span>
+                            <div class="flex items-center">
+                                <span class="text-gray-400 mr-2 text-sm">Rp</span>
+                                <input type="number" 
+                                    class="w-32 p-1.5 text-sm border border-gray-300 rounded-md text-right font-semibold text-gray-800 focus:ring-2 ${g.c.ring} outline-none transition-all shadow-inner bg-white" 
+                                    value="${g.current || ''}" 
+                                    oninput="updateGoal(${g.id}, this.value)"
+                                    placeholder="0">
+                            </div>
+                        </div>
+                    </div>
+                `;
+            });
+        };
+
+        // Input Handlers
+        window.updateBudget = (id, value) => {
+            const budget = budgets.find(b => b.id === id);
+            if (budget) {
+                budget.actual = Number(value) || 0;
+                saveData();
+                
+                let totalTerpakai = 0;
+                budgets.forEach((b) => { totalTerpakai += Number(b.actual) || 0; });
+                
+                document.getElementById("total-terpakai").innerText = formatRp(totalTerpakai);
+                const sisa = targetAnggaran - totalTerpakai;
+                const sisaEl = document.getElementById("sisa-anggaran");
+                sisaEl.innerText = formatRp(sisa);
+                sisaEl.className = `text-2xl font-bold ${sisa < 0 ? 'text-red-500' : 'text-green-600'}`;
+            }
+        };
+
+        // Fungsi Baru: Mengubah Target Anggaran Utama secara Real-time
+        window.updateTargetAnggaran = (value) => {
+            targetAnggaran = Number(value) || 0;
+            saveData();
+
+            let totalTerpakai = 0;
+            budgets.forEach((b) => { totalTerpakai += Number(b.actual) || 0; });
+            const sisa = targetAnggaran - totalTerpakai;
+            const sisaEl = document.getElementById("sisa-anggaran");
+            
+            if (sisaEl) {
+                sisaEl.innerText = formatRp(sisa);
+                sisaEl.className = `text-2xl font-bold ${sisa < 0 ? 'text-red-500' : 'text-green-600'}`;
+            }
+        };
+
+        window.toggleTask = (id) => {
+            const task = tasks.find(t => t.id === id);
+            if (task) {
+                task.done = !task.done;
+                saveData();
+                renderDashboard(); 
+            }
+        };
+
+        window.updateGoal = (id, value) => {
+            const goal = goals.find(g => g.id === id);
+            if (goal) {
+                goal.current = Number(value) || 0;
+                saveData();
+                
+                const targetNum = Number(goal.target) || 1;
+                const percent = Math.min(Math.round((goal.current / targetNum) * 100), 100);
+                
+                const pctEl = document.getElementById(`goal-pct-${id}`);
+                if (pctEl) pctEl.innerText = percent + "%";
+                
+                const barEl = document.getElementById(`goal-bar-${id}`);
+                if (barEl) barEl.style.width = percent + "%";
+            }
+        };
+
+        window.updateGoalTarget = (id, value) => {
+            const goal = goals.find(g => g.id === id);
+            if (goal) {
+                goal.target = Number(value) || 0;
+                saveData();
+                
+                const targetNum = Number(goal.target) || 1;
+                const percent = Math.min(Math.round((goal.current / targetNum) * 100), 100);
+                
+                const pctEl = document.getElementById(`goal-pct-${id}`);
+                if (pctEl) pctEl.innerText = percent + "%";
+                
+                const barEl = document.getElementById(`goal-bar-${id}`);
+                if (barEl) barEl.style.width = percent + "%";
+            }
+        };
+
+        window.updateDate = (val) => {
+            weddingDate = val;
+            saveData();
+        };
+
+        // Initialize App
+        document.getElementById('wedding-date').value = weddingDate;
+        document.getElementById('input-target-anggaran').value = targetAnggaran;
+        renderDashboard();
+    </script>
+</body>
+</html>
